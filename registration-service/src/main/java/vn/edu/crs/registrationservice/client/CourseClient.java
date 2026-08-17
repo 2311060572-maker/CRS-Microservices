@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
@@ -25,8 +26,8 @@ public class CourseClient {
             throw new IllegalStateException("Mon hoc da het cho");
         } catch (HttpClientErrorException.NotFound e) {
             throw new IllegalStateException("Mon hoc khong ton tai");
-        } catch (HttpServerErrorException | org.springframework.web.client.ResourceAccessException e) {
-            throw new IllegalStateException("Khong the ket noi toi course service, vui long thu lai sau");
+        } catch (HttpServerErrorException | ResourceAccessException e) {
+            throw new IllegalStateException("Khong the ket noi toi course-service, vui long thu lai sau");
         }
     }
 
@@ -36,8 +37,8 @@ public class CourseClient {
             restTemplate.exchange(url, HttpMethod.PATCH, null, Void.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new IllegalStateException("Mon hoc khong ton tai");
-        } catch (HttpServerErrorException | org.springframework.web.client.ResourceAccessException e) {
-            throw new IllegalStateException("Khong the ket noi toi course service, vui long thu lai sau");
+        } catch (HttpServerErrorException | ResourceAccessException e) {
+            throw new IllegalStateException("Khong the ket noi toi course-service, vui long thu lai sau");
         }
     }
 }

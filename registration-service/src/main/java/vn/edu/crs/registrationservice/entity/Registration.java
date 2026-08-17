@@ -20,7 +20,6 @@ public class Registration {
     @Column(name = "student_id", nullable = false)
     private Long studentId;
 
-    // Chi luu dang so, KHONG dung @ManyToOne toi Course vi Course nam o database khac
     @Column(name = "course_id", nullable = false)
     private Long courseId;
 
