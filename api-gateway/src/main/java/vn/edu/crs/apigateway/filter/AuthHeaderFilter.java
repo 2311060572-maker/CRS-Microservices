@@ -14,9 +14,10 @@ import java.util.List;
 @Component
 public class AuthHeaderFilter implements GlobalFilter, Ordered {
 
-    // Cac duong dan KHONG can Header Authorization
+    // Danh sách đường dẫn PUBLIC (bắt đầu bằng /api)
     private static final List<String> OPEN_PATHS = List.of(
             "/api/auth/login",
+            "/api/auth/register",
             "/api/public/courses"
     );
 
@@ -26,14 +27,16 @@ public class AuthHeaderFilter implements GlobalFilter, Ordered {
         String path = request.getURI().getPath();
 
         boolean isOpen = OPEN_PATHS.stream().anyMatch(path::startsWith);
-        // GET /api/courses/** la public (xem mon hoc khong can dang nhap), chi POST/PUT/DELETE moi can token
-        boolean isPublicCourseRead = path.startsWith("/api/courses") && request.getMethod().name().equals("GET");
+
+        // GET /api/courses/** là public (xem môn học không cần đăng nhập)
+        boolean isPublicCourseRead = path.startsWith("/api/courses") && "GET".equalsIgnoreCase(request.getMethod().name());
 
         if (isOpen || isPublicCourseRead) {
             return chain.filter(exchange);
         }
 
-        if (request.getHeaders().getFirst("Authorization") == null) {
+        // Chặn sớm nếu không có Header Authorization
+        if (!request.getHeaders().containsKey("Authorization")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -43,6 +46,6 @@ public class AuthHeaderFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return -1; // chay som, truoc khi request duoc dinh tuyen di
+        return -1;
     }
 }

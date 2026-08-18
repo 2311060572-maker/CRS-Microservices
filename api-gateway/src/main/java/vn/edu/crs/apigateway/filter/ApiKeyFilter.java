@@ -36,6 +36,6 @@ public class ApiKeyFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return -2; // chay truoc AuthHeaderFilter cho chinh route nay
+        return -2;
     }
 }

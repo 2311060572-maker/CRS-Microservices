@@ -15,17 +15,17 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration-ms}")
-    private long expirationMs;
-
     public String generateToken(String username, String role) {
+        // Tự động bỏ chữ ROLE_ nếu có
+        String cleanRole = role != null && role.startsWith("ROLE_") ? role.substring(5) : role;
+
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + expirationMs);
+        Date expiry = new Date(now.getTime() + 86400000); // 1 ngày
 
         return Jwts.builder()
                 .subject(username)
-                .claim("role", role)
+                .claim("role", cleanRole)
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)
